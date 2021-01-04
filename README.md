@@ -1,3 +1,14 @@
+### Run the Flask Server
+```bash
+python app.py
+```
+or
+```bash
+$ chmod +x experiments/run_server.sh
+$ ./experiments/run_server.sh
+
+```
+
 ### Train the Word2Vec model using
 ```bash
 curl POST 'http://localhost:8080/api/v1/wv-model-training'  --form 'file=data/train_40k.csv'
