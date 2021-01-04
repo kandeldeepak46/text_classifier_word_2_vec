@@ -13,6 +13,9 @@ wordEmbeddingService = WordEmbeddingService()
 textClassifierService = TextClassifierService()
 predictionService = PredictionService()
 
+@controller.route('/healthz')
+def test_health():
+    return "<h1>The api is running smoothly</h1>"
 
 @controller.route("/wv-model-training", methods=["POST"])
 def train_wv_model():
