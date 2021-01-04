@@ -4,7 +4,7 @@ import gensim
 import nltk
 import numpy as np
 import pandas as pd
-from flask import current_app
+from loguru import logger
 from gensim.models import Word2Vec
 from nltk.corpus import stopwords
 
@@ -18,12 +18,12 @@ VECTOR_SIZE = 150
 
 class WordEmbeddingService:
     def train_model(self, text_df):
-        current_app.logger.info("Word2Vec model training started.")
+        logger.info("Word2Vec model training started.")
         tokenized_text = self.clean_and_tokenize_text(text_df)
         model = gensim.models.Word2Vec(
             tokenized_text, window=50, size=150, iter=5, min_count=3, workers=4
         )
-        current_app.logger.info("Word2Vec model training completed.")
+        logger.info("Word2Vec model training completed.")
         model_id = str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
         self.save_model(model, model_id)
         model_info = ModelInfoVo()
@@ -31,11 +31,11 @@ class WordEmbeddingService:
         return model_info
 
     def create_word_embeddings(self, text_list, model_id):
-        current_app.logger.info("Word Embeddings' generation is started.")
+        logger.info("Word Embeddings' generation is started.")
         model = self.get_model(model_id)
         vectors = [self.calculate_avg_vectors(x, model) for x in text_list]
         vectors_df = pd.DataFrame(vectors).apply(pd.Series).reset_index()
-        current_app.logger.info("Word Embeddings' generation was completed.")
+        logger.info("Word Embeddings' generation was completed.")
         return vectors_df
 
     def clean_and_tokenize_text(self, text_df):
@@ -53,7 +53,7 @@ class WordEmbeddingService:
     def save_model(self, model, model_id):
         model_path = "app/models/wv/" + model_id + ".model"
         model.save(model_path)
-        current_app.logger.info("Word2Vec model was saved: %s", model_id)
+        logger.info("Word2Vec model was saved: %s", model_id)
 
     def get_model(self, model_id):
         model_path = "app/models/wv/" + model_id

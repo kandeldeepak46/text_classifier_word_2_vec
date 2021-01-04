@@ -3,7 +3,7 @@ import pickle
 
 import nltk
 import numpy as np
-from flask import current_app
+from loguru import logger
 from lightgbm import *
 from nltk.corpus import stopwords
 from sklearn import *
@@ -23,7 +23,7 @@ wordEmbeddingsService = WordEmbeddingService()
 
 class TextClassifierService:
     def train_classifier_model(self, text_df, model_id):
-        current_app.logger.info("LGBM training started.")
+        logger.info("LGBM training started.")
         tokenized_text = self.clean_and_tokenize_text(text_df)
         predicates = wordEmbeddingsService.create_word_embeddings(
             tokenized_text, model_id
@@ -41,13 +41,13 @@ class TextClassifierService:
             random_state=12345,
         )
         classifier.fit(x_train, y_train)
-        current_app.logger.info("LGBM training completed.")
+        logger.info("LGBM training completed.")
         predictions = classifier.predict(x_test)
         auc_score = roc_auc_score(y_test, predictions)
         f_score = f1_score(y_test, predictions, average="weighted")
         model_info = self.create_model_info(auc_score, f_score)
         self.save_model(classifier, model_id)
-        current_app.logger.info("Models is saved: " + model_info.model_id)
+        logger.info("Models is saved: " + model_info.model_id)
         return model_info
 
     def predict(self, vector_list, model_id):

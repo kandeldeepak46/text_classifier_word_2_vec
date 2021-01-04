@@ -1,5 +1,5 @@
 import json
-
+from loguru import logger
 import pandas as pd
 from flask import Blueprint, current_app, request, jsonify
 
@@ -16,7 +16,7 @@ predictionService = PredictionService()
 
 @controller.route("/wv-model-training", methods=["POST"])
 def train_wv_model():
-    current_app.logger.info("Model training started.")
+    logger.info("Model training started.")
     csv_file = request.form["file"]
     with open(csv_file, encoding="utf8") as file:
         text_df = pd.read_csv(file)
@@ -26,7 +26,7 @@ def train_wv_model():
 
 @controller.route("/text-classifier-training", methods=["POST"])
 def train_classifier_model():
-    current_app.logger.info("Text classifier model training started.")
+    logger.info("Text classifier model training started.")
     model_id = request.form["model_id"]
     csv_file = request.form["file"]
     with open(csv_file, encoding="utf8") as file:
@@ -37,7 +37,7 @@ def train_classifier_model():
 
 @controller.route("/predict-text", methods=["POST"])
 def predict_text_class():
-    current_app.logger.info("Text prediction started.")
+    logger.info("Text prediction started.")
     prediction_request = request.get_json()
     text = prediction_request["text"]
     model_id = prediction_request["model_id"]
