@@ -2,7 +2,7 @@
 ```bash
 python app.py
 ```
-or
+or for more verbose
 ```bash
 $ chmod +x experiments/run_server.sh
 $ ./experiments/run_server.sh
